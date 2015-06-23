@@ -258,6 +258,19 @@ class LogInstallProgress(apt.progress.base.InstallProgress):
         return pid
 
 
+class Utf8StreamHandler(logging.StreamHandler):
+
+    def emit(self, record):
+        try:
+            msg = self.format(record)
+            stream = self.stream
+            stream.write(msg.encode("utf-8"))
+            stream.write(self.terminator.encode("utf-8"))
+            self.flush()
+        except Exception as e:
+            self.handleError(record)
+
+
 class Unlocked:
     """
     Context manager for unlocking the apt lock while cache.commit() is run
@@ -926,22 +939,28 @@ def _setup_logging(options):
     if not options.dry_run and not os.path.exists(logdir):
         os.makedirs(logdir)
 
-    logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s %(levelname)s %(message)s',
-                        filename=logfile)
     # additional logging
     logger = logging.getLogger()
+    logger.addHandler(logging.FileHandler(filename=logfile, encoding="utf-8"))
+
+    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+    logger.handlers[0].setFormatter(formatter)
+
+    # *sigh* str/byte, py2/py3
+    try:
+        stdout_handler = Utf8StreamHandler(sys.stdout.buffer)
+    except AttributeError:
+        stdout_handler = Utf8StreamHandler(sys.stdout)
+
     mem_log = StringIO()
     if options.apt_debug:
         apt_pkg.config.set("Debug::pkgProblemResolver", "1")
         apt_pkg.config.set("Debug::pkgDepCache::AutoInstall", "1")
     if options.debug:
         logger.setLevel(logging.DEBUG)
-        stdout_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stdout_handler)
     elif options.verbose:
         logger.setLevel(logging.INFO)
-        stdout_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stdout_handler)
     if apt_pkg.config.find("Unattended-Upgrade::Mail", ""):
         mem_log_handler = logging.StreamHandler(mem_log)
