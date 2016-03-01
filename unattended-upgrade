@@ -33,6 +33,7 @@ import os
 import string
 import sys
 
+from datetime import date
 from StringIO import StringIO
 from optparse import OptionParser
 from subprocess import Popen, PIPE
@@ -677,6 +678,28 @@ def do_auto_remove(cache, options, logfile_dpkg, verbose=False):
                       % logfile_dpkg)
     return res
 
+def is_update_day():
+    # check if patch days are configured
+    patch_days = apt_pkg.config.value_list("Unattended-Upgrade::Update-Days")
+    if not patch_days:
+        return True
+    # validate patch days
+    today = date.today()
+    # abbreviated localized dayname
+    if today.strftime("%a") in patch_days:
+        return True
+    # full localized dayname
+    if today.strftime("%A") in patch_days:
+        return True
+    # by number (Sun: 0, Mon: 1, ...)
+    if today.strftime("%w") in patch_days:
+        return True
+    # today is not a patch day
+    logging.info(
+        "Skipping update check: today is '%s,%s,%s' but patch days are '%s'",
+        today.strftime("%w"), today.strftime("%a"), today.strftime("%A"),
+        patch_days)
+    return False
 
 def main(options, rootdir=""):
 
@@ -696,6 +719,10 @@ def main(options, rootdir=""):
     if apt_pkg.config.find("Unattended-Upgrade::Mail", ""):
         mem_log_handler = logging.StreamHandler(mem_log)
         logger.addHandler(mem_log_handler)
+
+    # check if today is a patch day
+    if not is_update_day():
+        return
 
     # format (origin, archive), e.g. ("Ubuntu","dapper-security")
     allowed_origins = get_allowed_origins()
