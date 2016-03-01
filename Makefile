@@ -7,6 +7,7 @@ SHAREDIR=$(FAKEROOT)/usr/share/$(PACKAGE)
 MANDIR=$(FAKEROOT)/usr/share/man/man8
 BINDIR=$(FAKEROOT)/usr/bin
 EGGDIR=$(FAKEROOT)/usr/lib/python3/dist-packages/unattended_upgrades-0.1.egg-info
+PYSHARED=$(FAKEROOT)/usr/share/pyshared
 LOGROTATEDIR=$(FAKEROOT)/etc/logrotate.d
 SLEEPDIR=$(FAKEROOT)/etc/pm/sleep.d
 INITDIR=$(FAKEROOT)/etc/init.d
@@ -36,7 +37,7 @@ $(DOCDIR)/changelog.gz: debian/changelog $(DOCDIR)
 $(DOCDIR)/copyright: debian/copyright $(DOCDIR)
 	cp $< $@
 
-$(DOCDIR)/README.md: README.md $(DOCDIR)
+$(DOCDIR)/README: README $(DOCDIR)
 	cp $< $@
 
 debian-binary:
@@ -58,7 +59,7 @@ md5sums: install-deps
 data.tar.gz: install-deps \
              $(DOCDIR)/changelog.gz \
              $(DOCDIR)/copyright \
-			 $(DOCDIR)/README.md
+             $(DOCDIR)/README
 	find $(FAKEROOT) -type d | xargs chmod 0755
 	find $(FAKEROOT) -type d | xargs chmod ug-s
 	find $(FAKEROOT)/usr/share/doc -type f | xargs chmod 0644
@@ -76,12 +77,12 @@ install-clean:
 	-rm -rf $(FAKEROOT)
 
 install-deps: install-clean	
-	mkdir -p $(DOCDIR) $(SHAREDIR) $(MANDIR) $(BINDIR) $(EGGDIR) $(LOGROTATEDIR) $(SLEEPDIR) $(INITDIR) $(APTDIR)
+	mkdir -p $(DOCDIR) $(SHAREDIR) $(MANDIR) $(BINDIR) $(PYSHARED) $(LOGROTATEDIR) $(SLEEPDIR) $(INITDIR) $(APTDIR)
 	install -m 755 unattended-upgrade $(BINDIR)
 	install -m 755 debian/unattended-upgrades.init $(INITDIR)/unattended-upgrades
 	install -m 755 pm/sleep.d/10_unattended-upgrades-hibernate $(SLEEPDIR)
 	install -m 755 unattended-upgrade-shutdown $(SHAREDIR)
-	install -m 644 unattended_upgrades-0.1.egg-info/top_level.txt unattended_upgrades-0.1.egg-info/PKG-INFO unattended_upgrades-0.1.egg-info/dependency_links.txt unattended_upgrades-0.1.egg-info/SOURCES.txt $(EGGDIR)
+	install -m 644 unattended_upgrades-0.1.egg-info $(PYSHARED)
 	install -m 644 data/20auto-upgrades data/20auto-upgrades-disabled $(SHAREDIR)
 	cat man/unattended-upgrade.8 | gzip -9 > man/unattended-upgrade.8.gz
 	install -m 644 man/unattended-upgrade.8.gz $(MANDIR)
