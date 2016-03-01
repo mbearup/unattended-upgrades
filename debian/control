@@ -1,21 +1,12 @@
-Source: unattended-upgrades
+Package: unattended-upgrades
+Version: 0.82.1ubuntu2.4.1
+Architecture: all
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Installed-Size: 252
+Depends: debconf (>= 0.5) | debconf-2.0, debconf, python3, python3-apt, apt-utils, apt, ucf, lsb-release, lsb-base (>= 3.2-14), xz-utils
+Suggests: bsd-mailx, mail-transport-agent
 Section: admin
 Priority: optional
-Maintainer: Michael Vogt <mvo@debian.org>
-Build-Depends: debhelper (>= 7.0.50~), po-debconf
-Build-Depends-Indep: python (>= 2.6.6-3~), python3-distutils-extra,
- python3-setuptools, python-dev, python3-dev, python-coverage, pep8,
- pyflakes, python-apt, python3-apt, lsb-release
-Standards-Version: 3.9.3
-Vcs-Bzr: http://bzr.debian.org/bzr/apt/unattended-upgrades/debian-sid
-XS-Testsuite: autopkgtest
-
-Package: unattended-upgrades
-Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, debconf, python3, 
- python3-apt, apt-utils, apt, ucf, lsb-release, lsb-base (>= 3.2-14),
- xz-utils
-Suggests: bsd-mailx, mail-transport-agent
 Description: automatic installation of security upgrades
  This package can download and install security upgrades automatically
  and unattended, taking care to only install packages from the
@@ -24,3 +15,4 @@ Description: automatic installation of security upgrades
  .
  This script is the backend for the APT::Periodic::Unattended-Upgrade
  option.
+Original-Maintainer: Michael Vogt <mvo@debian.org>
