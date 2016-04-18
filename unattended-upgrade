@@ -872,6 +872,7 @@ def _setup_logging(options):
     if syslogEnable:
         syslogFacility = apt_pkg.config.find("Unattended-Upgrade::SyslogFacility", "syslog")
         syslogHandler=logging.handlers.SysLogHandler(address='/dev/log', facility=syslogFacility)
+        syslogHandler.ident="unattended-upgrade: "
         if syslogFacility.lower() in syslogHandler.facility_names.keys():
             logger.addHandler(syslogHandler)
             logging.info("Enabled logging to syslog via %s facility " % syslogFacility)
