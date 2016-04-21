@@ -61,7 +61,7 @@ Unattended-Upgrade::Package-Blacklist {
 // Enable logging to syslog. Default is False
 // Unattended-Upgrade::SyslogEnable "false";
 
-// Specify syslog facility. Default is syslog
-// Unattended-Upgrade::SyslogFacility "syslog";
+// Specify syslog facility. Default is daemon
+// Unattended-Upgrade::SyslogFacility "daemon";
 
 

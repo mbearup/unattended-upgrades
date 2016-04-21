@@ -49,6 +49,7 @@ control.tar.gz: md5sums debian/control
 	-mkdir -p $(CONTROLROOT)
 	install -m 644 debian/conffiles debian/control debian/templates md5sums $(CONTROLROOT)
 	install -m 755 debian/config debian/postinst debian/postrm debian/prerm $(CONTROLROOT)
+	sed -i '/^Version:/c Version: $(VERSION)' control-root/control
 	cd $(CONTROLROOT) && tar -czf ../$@ --owner=root --group=root .
 
 md5sums: install-deps
