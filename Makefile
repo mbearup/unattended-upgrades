@@ -1,5 +1,5 @@
 PACKAGE=unattended-upgrades
-VERSION=0.82.1ubuntu2.4.2
+VERSION=0.82.1ubuntu2.5.1
 CONTROLROOT=./control-root
 FAKEROOT=./data-root
 DOCDIR=$(FAKEROOT)/usr/share/doc/$(PACKAGE)

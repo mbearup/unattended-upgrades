@@ -1,5 +1,5 @@
 Package: unattended-upgrades
-Version: 0.82.1ubuntu2.4.1
+Version: 0.82.1ubuntu2.5.1
 Architecture: all
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Installed-Size: 252
